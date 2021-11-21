@@ -1,0 +1,39 @@
+name: 'appstore-connect-authenticate-with-key-action'
+description: 'Appstore connect authenticate with API Key'
+branding:
+  icon: 'arrow-up-circle'
+  color: 'green'
+
+inputs:
+  key-id:
+    description: 'Key ID'
+    required: true
+  issuer-id:
+    description: 'Issuer ID'
+    required: true
+  base64-key-content:
+    description: 'Base64 Key'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache fastlane lib
+      id: cache-fastlane-lib
+      uses: actions/cache@v2
+      with:
+        path: |
+          /usr/local/bin/fastlane
+        key: ${{ runner.os }}-fastlane-lib-v1
+
+    - name: Install fastlane
+      if: steps.cache-fastlane-lib.outputs.cache-hit != 'true'
+      run: |
+        export GEM_HOME=$HOME/.gem
+        export PATH=$GEM_HOME/bin:$PATH
+        gem install -n /usr/local/bin fastlane
+      shell: bash
+
+    - run: |
+        /usr/local/bin/fastlane run app_store_connect_api_key key_id:"${{ inputs.key-id }}" issuer_id:"${{ inputs.issuer-id }}" key_content:"${{ inputs.base64-key-content }}" duration:"1200" in_house:"false" is_key_content_base64:"true"
+      shell: bash
