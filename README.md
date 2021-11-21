@@ -1,5 +1,10 @@
 # appstore-connect-authenticate-with-key-action
 
+To generate the base64 key content for the `base64-key-content`
+
+> $ cat path_to_p8_file | base64 -b 0
+
+
 ```xml
 jobs:
 
